@@ -1,0 +1,25 @@
+services:
+  farmoo-database:
+    image: postgres:17
+    container_name: farmoo_db
+    hostname: farmoo.db
+    restart: always
+    ports:
+      - "9000:5432"
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: farmoo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - farmoo-database-data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - farmoo-network
+
+volumes:
+  farmoo-database-data:
+
+networks:
+  farmoo-network:
+    external: true
