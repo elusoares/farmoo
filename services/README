@@ -1,56 +1,54 @@
 Passos utilizados para o desenvolvimento desse trabalho:
-1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, 
-  com o comando docker network create farmoo-network
+1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, com o comando docker network create farmoo-network
 2. Defini o schema do banco e coloquei na pasta `database/init`.
 3. Configurei o arquivo `docker-compose.yml` para:
   - utilizar a rede `farmoo-network` e conectar os serviços 
     necessários.
   - criar o volume farmoo-database-data para persistência dos dados do banco.
   - criar o farmoo-database, que é o container do banco de dados PostgreSQL.
+4. Executei `docker compose up --build -d` para criar os containers
+5. Criei a conexão com o banco no dbeaver
 
-Inicialização do PostgreSQL:
+Inicialização do Container PostgreSQL:
 1. Coloque os scripts `.sql`, `.sql.gz` ou `.sh` em `database/init`.
-2. Ao executar `docker compose up --build -d` pela primeira vez, a imagem oficial executa os arquivos em 
-  ordem alfabética. Prefixos como `01-schema.sql` e `02-dados.sql` deixam essa ordem explícita.
-3. Os scripts de inicialização só são executados quando o volume de dados está vazio. Apenas alterar um 
-  arquivo não atualiza um banco já inicializado.
-4. Durante o desenvolvimento, para apagar e recriar o banco usando os scripts atuais, execute 
-  `docker compose down -v` e depois `docker compose up -d`. Esse comando exclui todos os dados do banco.
-5. Para atualizar um banco preservando dados, crie uma nova migration incremental e aplique-a com uma 
-  ferramenta de migrations, como Flyway ou Liquibase. Não edite uma migration já aplicada.
+2. Ao executar `docker compose up --build -d` pela primeira vez, a imagem oficial executa os arquivos em ordem alfabética. Prefixos como `01-schema.sql` e `02-dados.sql` deixam essa ordem explícita.
+3. Os scripts de inicialização só são executados quando o volume de dados está vazio. Apenas alterar um arquivo não atualiza um banco já inicializado.
+4. Durante o desenvolvimento, para apagar e recriar o banco usando os scripts atuais, execute `docker compose down -v` e depois `docker compose up -d`. Esse comando exclui todos os dados do banco.
+5. Para atualizar um banco preservando dados, crie uma nova migration incremental e aplique-a com uma ferramenta de migrations, como Flyway ou Liquibase. Não edite uma migration já aplicada.
 
 Coisas interessantes que fui aprendendo ao longo do desenvolvimento:
 O que significa cada comando:
-1. docker network create farmoo-network: cria a rede farmoo-network do tipo bridge, que é a rede padrão 
-  do Docker e permite comunicação entre containers na mesma rede.
-2. docker network ls: lista todas as redes Docker disponíveis.
-3. docker network inspect farmoo-network: exibe detalhes sobre a rede farmoo-network, incluindo containers 
-  conectados e configurações de rede.
-4.docker compose up --build -d:
-- docker compose up: Cria, inicia e conecta os contêineres definidos no arquivo docker-compose.yml.
-- --build: Força a reconstrução das imagens antes de iniciar os contêineres, garantindo que alterações no 
-  código-fonte ou no Dockerfile sejam aplicadas.
-- -d: Executa os contêineres em segundo plano, liberando o terminal para digitar outros comandos.
-5. docker compose start: inicializa todos os contêineres definidos no arquivo docker-compose.yml 
-  do diretório atual.
-6. docker compose stop: para todos os contêineres definidos no arquivo docker-compose.yml do diretório atual.
-7. docker stop $(docker ps -q): para todos os containers em execução.
+1. `docker network create farmoo-network` cria a rede farmoo-network do tipo bridge, que é a rede padrão do Docker e permite comunicação entre containers na mesma rede.
+2. `docker network ls`: lista todas as redes Docker disponíveis.
+3. `docker network inspect farmoo-network`: exibe detalhes sobre a rede farmoo-network, incluindo containers conectados e configurações de rede.
+4. `docker compose up --build -d`:
+  - docker compose up: Cria, inicia e conecta os contêineres definidos no arquivo docker-compose.yml.
+  - --build: Força a reconstrução das imagens antes de iniciar os contêineres, garantindo que alterações no código-fonte ou no Dockerfile sejam aplicadas.
+  - -d: Executa os contêineres em segundo plano, liberando o terminal para digitar outros comandos.
+5. `docker compose start`: inicializa todos os contêineres definidos no arquivo docker-compose.yml do diretório atual.
+6. `docker compose stop`: para todos os contêineres definidos no arquivo docker-compose.yml do diretório atual.
+7. `docker compose down -v`:
+  - docker compose down: encerra a execução dos conteiners definidos no arquivo docker-compose.yml do diretório atual, e apaga as redes virtuais criadas
+  - -v: exclui os volumes associados aos serviços
+8. `docker stop $(docker ps -q)`: para todos os containers em execução.
+9. `docker ps`: lista os conteiners que estão em execução
+10. `docker logs <container>`: exibe os logs do container
 Tipos de rede do Docker
 1. Bridge: 
 - tipo padrão de rede do Docker que cria uma rede virtual para o container, onde ele tem seu próprio 
-  endereço IP
+endereço IP
 - containers numa mesma rede bridge podem se comunicar entre si usando os endereços IP atribuídos a 
-  cada container.
+cada container.
 - quando usar: maioria dos casos em que os containers precisam se comunicar entre si dentro do mesmo host.
 - comando: docker network create farmoo-network --driver bridge (--driver bridge é opcional nesse caso, 
-  pois bridge é o tipo padrão)
+pois bridge é o tipo padrão)
 2. Host:
 - remove o isolamento de rede entre o container o computador
 - o container usa diretamente a placa de rede do computador
 - o container nao tem endereço IP próprio, ele compartilha o endereço IP do host.
 - dois containers nao pode utilizar a mesma porta do host simultaneamente.
 - quando usar: quando o container precisa de alto desempenho de rede ou acesso direto às interfaces de 
-  rede do host.
+rede do host.
 - comando: docker network create farmoo-network --driver host
 3. None/Null:
 - usada quando não se deseja que o container tenha qualquer conectividade de rede.
@@ -59,7 +57,7 @@ Tipos de rede do Docker
 4. Overlay:
 - utilizada para conectar containers em diferentes computadores
 - cria uma rede virtual que se estende por múltiplos hosts, permitindo que os containers se comuniquem 
-  como se estivessem na mesma rede local.
+como se estivessem na mesma rede local.
 - quando usar: quando os containers precisam se comunicar entre hosts diferentes.
 - comando: docker network create farmoo-network --driver overlay
 
@@ -75,3 +73,6 @@ O volume farmoo-database-data armazena:
 Quando usar: quando você precisa que os dados sobrevivam à reinicialização ou remoção de containers.
 Comando para criar um volume: docker volume create farmoo-volume. Porém, declarado no docker-compose.yml, 
 não é necessário criá-lo manualmente.
+
+O que é o hostname no arquivo docker-compose.yml
+É a resolução DNS do container na rede interna que ele está inserido, ou seja, é o nome que outros containers vão usar para acessá-lo. Exemplo: `http://farmoo.db:5432`. Porém, se essa propriedade não estiver definida. o nome do serviço é utilizado no lugar. Exemplo: `http://farmoo.database:5432`
