@@ -1,7 +1,8 @@
 import { pool } from '@config/database'
+import { Animal } from '@repositories/create-animal/types'
 import logger from '@utils/logger'
 import { AnimalUpdateNotFoundError, EmptyAnimalUpdateError } from './errors'
-import { UpdateAnimalData, UpdatedAnimal } from './types'
+import { UpdateAnimalData } from './types'
 
 const animalColumns: ReadonlyArray<{
   key: keyof UpdateAnimalData
@@ -23,7 +24,7 @@ const animalColumns: ReadonlyArray<{
 
 const updateAnimalRepository = async (
   data: UpdateAnimalData
-): Promise<UpdatedAnimal> => {
+): Promise<Animal> => {
   const animalId = data.id
   const values: unknown[] = []
   const assignments: string[] = []
@@ -41,7 +42,7 @@ const updateAnimalRepository = async (
     throw new EmptyAnimalUpdateError('Nenhum campo foi informado para atualização')
   }
   
-  const result = await pool.query<UpdatedAnimal>(
+  const result = await pool.query<Animal>(
     `UPDATE farmoo.animais
 		 SET ${assignments.join(', ')}, updated_at = CURRENT_TIMESTAMP
 		 WHERE id = ${animalId}

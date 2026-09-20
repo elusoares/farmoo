@@ -1,5 +1,3 @@
-import { Animal } from '@repositories/create-animal/types'
-
 export type UpdateAnimalData = {
   id: number
   tipo?: string
@@ -14,5 +12,3 @@ export type UpdateAnimalData = {
   valorVenda?: number | null
   dataVenda?: Date | null
 }
-
-export type UpdatedAnimal = Animal
