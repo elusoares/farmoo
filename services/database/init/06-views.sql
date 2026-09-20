@@ -13,15 +13,6 @@ SELECT
     CASE WHEN vendido THEN 'vendido' ELSE 'ativo' END AS status
 FROM animais;
 
-CREATE VIEW vw_animais_com_mae AS
-SELECT
-    a.id, a.tipo, a.nome, a.origem,
-    a.data_nascimento, a.mae_id,
-    m.nome AS nome_mae,
-    a.vendido, a.valor_venda
-FROM animais a
-LEFT JOIN animais m ON a.mae_id = m.id;
-
 -- ---------- VIEWS DO SERVIÇO DE PRODUÇÃO ----------
 
 CREATE VIEW vw_producoes AS
@@ -31,19 +22,6 @@ SELECT
     p.tipo, p.quantidade, p.unidade, p.data
 FROM producoes p
 JOIN animais a ON p.animal_id = a.id;
-
-CREATE VIEW vw_producao_por_animal AS
-SELECT
-    a.id AS animal_id,
-    a.nome AS nome_animal,
-    a.tipo AS tipo_animal,
-    p.tipo AS tipo_producao,
-    SUM(p.quantidade) AS total_produzido,
-    p.unidade,
-    COUNT(*) AS registros
-FROM producoes p
-JOIN animais a ON p.animal_id = a.id
-GROUP BY a.id, a.nome, a.tipo, p.tipo, p.unidade;
 
 -- ---------- VIEWS DO SERVIÇO FINANCEIRO ----------
 
