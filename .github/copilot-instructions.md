@@ -142,6 +142,7 @@ export default validateBody
 - `index.ts` is the controller entrypoint.
 - `types.ts` contains the type definitions for the controller.
 - `validation.ts` contains the Zod schemas and the validation function for body, path, or query.
+- All errors thrown within controllers should be instances of `HttpError` to ensure consistent error handling and proper HTTP responses.
 
 #### Example
 ```ts
