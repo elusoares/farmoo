@@ -22,7 +22,7 @@ services:
     networks:
       - farmoo-network
 
-  animais:
+  farmoo-animais:
     build:
       context: ./animais
       dockerfile: Dockerfile
