@@ -15,6 +15,7 @@ const CreateAnimalController = async (req: Request, res: Response) => {
     const animal = await createAnimalUseCase(validatedBody)
 
     logger.info('Animal criado', { animalId: animal.id })
+    
     return res.status(HttpStatusCode.CREATED).json(animal)
   } catch (error) {
     if (error instanceof AnimalCreationError) {
