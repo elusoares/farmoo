@@ -616,6 +616,38 @@ fieldset {
   box-shadow: 0 1px 4px rgba(20, 50, 40, 0.12);
 }
 
+.production-controls {
+  display: flex;
+  margin-top: 22px;
+}
+
+.view-switch {
+  width: min(310px, 100%);
+}
+
+.view-switch button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.status-tag.estoque {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.stock-value {
+  color: var(--green-dark);
+  font-size: 14px;
+}
+
+.dialog-context {
+  margin: -12px 0 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .money-input {
   display: flex;
   align-items: center;

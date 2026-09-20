@@ -1,6 +1,15 @@
-import type { Animal, CreateAnimalPayload, SellAnimalPayload } from './types'
+import type {
+    Animal,
+    CreateAnimalPayload,
+    CreateProducaoPayload,
+    EstoqueProducao,
+    Producao,
+    SellAnimalPayload,
+    SellProducaoPayload,
+} from './types'
 
-const apiUrl = import.meta.env.VITE_ANIMAIS_API_URL ?? '/api/animais'
+const animaisApiUrl = import.meta.env.VITE_ANIMAIS_API_URL ?? '/api/animais'
+const producoesApiUrl = import.meta.env.VITE_PRODUCOES_API_URL ?? '/api/producoes'
 
 const getErrorMessage = async (response: Response) => {
   try {
@@ -11,7 +20,7 @@ const getErrorMessage = async (response: Response) => {
   }
 }
 
-const request = async <ResponseBody>(path: string, init?: RequestInit): Promise<ResponseBody> => {
+const request = async <ResponseBody>(apiUrl: string, path: string, init?: RequestInit): Promise<ResponseBody> => {
   const response = await fetch(`${apiUrl}${path}`, {
     ...init,
     headers: {
@@ -28,20 +37,42 @@ const request = async <ResponseBody>(path: string, init?: RequestInit): Promise<
 }
 
 export const checkAnimalsHealth = async (signal?: AbortSignal) => {
-  const response = await fetch(`${apiUrl}/health`, { signal })
+  const response = await fetch(`${animaisApiUrl}/health`, { signal })
   return response.ok
 }
 
-export const getAnimals = () => request<Animal[]>('/animais/')
+export const getAnimals = () => request<Animal[]>(animaisApiUrl, '/animais/')
 
 export const createAnimal = (data: CreateAnimalPayload) =>
-  request<Animal>('/animais', {
+  request<Animal>(animaisApiUrl, '/animais', {
     method: 'POST',
     body: JSON.stringify(data),
   })
 
 export const sellAnimal = (id: number, data: SellAnimalPayload) =>
-  request<Animal>(`/animais/${id}/venda`, {
+  request<Animal>(animaisApiUrl, `/animais/${id}/venda`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+
+export const checkProducoesHealth = async (signal?: AbortSignal) => {
+  const response = await fetch(`${producoesApiUrl}/health`, { signal })
+  return response.ok
+}
+
+export const getProducoes = () => request<Producao[]>(producoesApiUrl, '/producoes')
+
+export const getEstoqueProducoes = () =>
+  request<EstoqueProducao[]>(producoesApiUrl, '/producoes/estoque')
+
+export const createProducao = (data: CreateProducaoPayload) =>
+  request<Producao>(producoesApiUrl, '/producoes', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+
+export const sellProducao = (id: number, data: SellProducaoPayload) =>
+  request<Producao>(producoesApiUrl, `/producoes/${id}/venda`, {
     method: 'PATCH',
     body: JSON.stringify(data),
   })

@@ -11,6 +11,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/animais/, ''),
       },
+      '/api/producoes': {
+        target: 'http://localhost:9002',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/producoes/, ''),
+      },
     },
   },
 })

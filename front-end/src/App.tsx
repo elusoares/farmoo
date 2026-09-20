@@ -22,6 +22,7 @@ import type { FormEvent } from 'react'
 import { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { checkAnimalsHealth, createAnimal, getAnimals, sellAnimal } from './api'
 import './App.css'
+import ProducoesWorkspace from './ProducoesWorkspace'
 import type { Animal, AnimalOrigin, CreateAnimalPayload } from './types'
 
 type ServiceId = 'animais' | 'producao' | 'financeiro'
@@ -63,6 +64,7 @@ const getMessage = (error: unknown) =>
 const App = () => {
   const [activeService, setActiveService] = useState<ServiceId>('animais')
   const [health, setHealth] = useState<HealthStatus>('checking')
+  const [productionHealth, setProductionHealth] = useState<HealthStatus>('checking')
   const [animals, setAnimals] = useState<Animal[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -237,7 +239,7 @@ const App = () => {
           >
             <Icon size={18} />
             <span>{label}</span>
-            <span className={`service-dot ${id === 'animais' ? health : 'planned'}`} />
+            <span className={`service-dot ${id === 'animais' ? health : id === 'producao' ? productionHealth : 'planned'}`} />
           </button>
         ))}
       </nav>
@@ -324,11 +326,13 @@ const App = () => {
               </>
             )}
           </section>
+        ) : activeService === 'producao' ? (
+          <ProducoesWorkspace animals={animals} onHealthChange={setProductionHealth} />
         ) : (
           <section className="workspace future-service">
-            <div className="future-icon">{activeService === 'producao' ? <Wheat size={30} /> : <BadgeDollarSign size={30} />}</div>
+            <div className="future-icon"><BadgeDollarSign size={30} /></div>
             <p className="eyebrow">Próximo serviço</p>
-            <h1>{activeService === 'producao' ? 'Produção' : 'Financeiro'}</h1>
+            <h1>Financeiro</h1>
             <p>A integração será habilitada quando o serviço estiver disponível.</p>
             <span className="planned-badge">Integração pendente</span>
           </section>

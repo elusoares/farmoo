@@ -37,3 +37,39 @@ export type SellAnimalPayload = {
   valorVenda: number
   dataVenda: string
 }
+
+export type Producao = {
+  id: number
+  animal_id: number
+  nome_animal: string
+  tipo_animal: string
+  tipo: string
+  quantidade: string
+  unidade: string
+  data: string
+  vendido: boolean
+  valor_venda: string | null
+  data_venda: string | null
+  status: 'vendido' | 'em estoque'
+}
+
+export type EstoqueProducao = {
+  produto: string
+  unidade: string
+  quantidade_produzida: string
+  quantidade_vendida: string
+  quantidade_disponivel: string
+}
+
+export type CreateProducaoPayload = {
+  animalId: number
+  tipo: string
+  quantidade: number
+  unidade: string
+  data: string
+}
+
+export type SellProducaoPayload = {
+  valorVenda: number
+  dataVenda: string
+}
