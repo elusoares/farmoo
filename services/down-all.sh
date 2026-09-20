@@ -13,9 +13,9 @@ NC='\033[0m'
 echo -e "${YELLOW}🛑 Parando containers (dev + prod)...${NC}"
 
 # Para o ambiente de produção (ignora override)
-docker compose -f docker-compose.yml down
+docker compose -f docker-compose.yml down -v
 
 # Para o ambiente de desenvolvimento (usa override automaticamente)
-docker compose down
+docker compose down -v
 
 echo -e "${GREEN}✅ Tudo parado.${NC}"
