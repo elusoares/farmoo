@@ -44,6 +44,28 @@ services:
       - farmoo-database
     networks:
       - farmoo-network
+  farmoo-producoes:
+    build:
+      context: ./producoes
+      dockerfile: Dockerfile
+    container_name: farmoo_producoes
+    restart: always
+    ports:
+      - "${PRODUCOES_HOST_PORT}:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3001
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      TZ: ${TZ}
+      PGTZ: ${PGTZ}
+    depends_on:
+      - farmoo-database
+    networks:
+      - farmoo-network
 
 volumes:
   farmoo-database-data:
