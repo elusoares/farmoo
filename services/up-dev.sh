@@ -12,6 +12,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
+WATCH_PID_FILE='.compose-watch.pid'
+
+cleanup_watch_pid() {
+  rm -f "$WATCH_PID_FILE"
+}
+
+trap cleanup_watch_pid EXIT
 
 echo -e "${GREEN}🚀 Subindo ambiente de DESENVOLVIMENTO com watch...${NC}"
 
@@ -31,4 +38,16 @@ echo -e "${YELLOW}👀 Monitorando alterações em src/ e package.json...${NC}"
 echo -e "${YELLOW}   Ctrl+C para sair do watch (os containers continuam rodando).${NC}"
 echo ""
 
-docker compose watch
+docker compose watch &
+watch_pid=$!
+printf '%s\n' "$watch_pid" > "$WATCH_PID_FILE"
+
+if wait "$watch_pid"; then
+  exit 0
+else
+  watch_status=$?
+fi
+
+if [[ "$watch_status" -ne 137 && "$watch_status" -ne 143 ]]; then
+  exit "$watch_status"
+fi

@@ -2,3 +2,4 @@ services/**/node_modules/
 services/**/dist/
 services/**/.env
 .env
+.compose-watch.pid
