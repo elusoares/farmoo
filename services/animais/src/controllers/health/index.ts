@@ -5,7 +5,7 @@ import { validateUpdateHealthBody } from './validation'
 
 let isHealthy = true
 
-const healthController = (_req: Request, res: Response) => {
+const HealthController = (_req: Request, res: Response) => {
   const statusCode = isHealthy ? HttpStatusCode.OK : HttpStatusCode.SERVICE_UNAVAILABLE
 
   logger.info('Health check solicitado', { healthy: isHealthy })
@@ -16,7 +16,7 @@ const healthController = (_req: Request, res: Response) => {
   })
 }
 
-const updateHealthController = (req: Request, res: Response) => {
+const UpdateHealthController = (req: Request, res: Response) => {
   const body = validateUpdateHealthBody(req.body)
 
   isHealthy = body.healthy
@@ -24,4 +24,4 @@ const updateHealthController = (req: Request, res: Response) => {
   res.status(HttpStatusCode.OK).json({ status: isHealthy ? 'ok' : 'unavailable' })
 }
 
-export { healthController, updateHealthController }
+export { HealthController, UpdateHealthController }

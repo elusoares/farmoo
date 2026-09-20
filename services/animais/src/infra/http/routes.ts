@@ -1,9 +1,9 @@
-import { healthController, updateHealthController } from '@controllers/health'
+import { HealthController, UpdateHealthController } from '@controllers/health'
 import { Router } from 'express'
 
 const routes = Router()
 
-routes.get('/health', healthController)
-routes.patch('/health', updateHealthController)
+routes.get('/health', HealthController)
+routes.patch('/health', UpdateHealthController)
 
 export default routes
