@@ -1,5 +1,6 @@
 import { HttpError } from '@infra/http/errors'
 import { HttpStatusCode } from '@infra/http/types'
+import { logger } from '@utils/logger'
 import express, { NextFunction, Request, Response } from 'express'
 import routes from './routes'
 const app = express()
@@ -17,7 +18,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     return
   }
 
-  console.error(err.stack)
+  logger.error('Erro não tratado durante a requisição', err)
   res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' })
 })
 

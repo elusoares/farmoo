@@ -122,3 +122,11 @@ export const validateBody = (data: unknown): Body => {
   return result.data
 }
 ``` 
+## Logging
+
+- A shared `logger` is available with `info`, `warn`, and `error` methods.
+- In controllers, always log the outcome using the appropriate level:
+  - On success: `logger.info`
+  - On expected/warning conditions: `logger.warn`
+  - On errors: `logger.error`
+- Pass a short message as the first argument and any extra details as additional arguments.
