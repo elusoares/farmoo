@@ -4,6 +4,8 @@ Como executar os containers:
   ./up-dev.sh      # sobe dev em background
   ./up-prod.sh     # sobe prod em background
   ./down-all.sh     # destrói tudo
+3. Em terminais separados, verifique os logs de cada container: `docker logs -f <container>`
+4. Para apenas parar os serviços, execute `docker compose stop`
 
 Passos utilizados para o desenvolvimento desse trabalho:
 1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, com o comando docker network create farmoo-network
@@ -31,10 +33,12 @@ Desenvolvimento dos serviços com Node.js e Typescript
 - na pasta do serviço inicializei com `npm init` e escolhi o type `module` para poder utilizar o sistema de modulos mais atual 
 - instalei como dependências de produção:
   - `express`: framework usado para construir aplicações web e APIs de forma rápida e com menos código.
+  - `pg`: driver do postgresql
 - instalei como dependências de desenvolvimento: 
   - `typescript`: É o compilador oficial do TypeScript. Ele analisa seu código em busca de erros de tipagem e o converte (transpila) em JavaScript puro para que o Node.js consiga executá-lo.
   - `@types/node`: Fornece as definições de tipo para os recursos nativos do Node.js (como o sistema de arquivos fs, caminhos path, variáveis globais process, etc.). Sem isso, o TypeScript não reconhece os comandos do próprio Node. 
   - `@types/express`: Adiciona as definições de tipo para o framework Express. Ele permite que o seu editor de código (como o VS Code) ofereça preenchimento automático (Autocompletar/IntelliSense) para as rotas, requisições e respostas do Express.
+  - `@types/pg`: Definições de tipo para o driver do postgresql 
   - `tsx`: É uma ferramenta excelente para o dia a dia. Ela permite executar arquivos TypeScript diretamente no terminal (ex: npx tsx src/server.ts) sem que você precise compilar manualmente para JavaScript primeiro. Ela substitui de forma moderna e muito mais rápida o antigo ts-node.
   - `tsc-alias`: ferramenta que roda depois do tsc e corrige os caminhos de importação no código compilado (na pasta dist/), adicionando automaticamente as extensões .js que faltam.
   - `prettier`: responsável por formatar o código — remover ponto e vírgula, trocar aspas duplas por simples, ajustar indentação, etc.
@@ -81,7 +85,7 @@ O que significa cada comando Docker usado:
   - -v: exclui os volumes associados aos serviços
 8. `docker stop $(docker ps -q)`: para todos os containers em execução.
 9. `docker ps`: lista os conteiners que estão em execução
-10. `docker logs <container>`: exibe os logs do container
+10. `docker logs -f <container>`: exibe os logs do container, onde -f atualiza a tela com novos logs
 Tipos de rede do Docker
 1. Bridge: 
 - tipo padrão de rede do Docker que cria uma rede virtual para o container, onde ele tem seu próprio 
