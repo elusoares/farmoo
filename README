@@ -21,6 +21,7 @@ Passos utilizados para o desenvolvimento desse trabalho:
   - todas as pastas node_modules do projeto
   - todas as pastas dist do projeto
 7. Criei o .vscode/.settings.json para configurar o VS Code com preferências específicas do projeto.
+8. Defini o copilot-instructions.md
 
 Inicialização do Container PostgreSQL:
 1. Coloque os scripts do banco em `database/init`.
