@@ -8,7 +8,7 @@ const bootstrap = async () => {
   
   await testConnection()
   app.listen(PORT, () => {
-    console.log(`🚀 Microsserviço 'animais' rodando na porta ${PORT}`)
+    console.log(`🚀 Microsserviço 'producoes' rodando na porta ${PORT}`)
   })
 }
 
