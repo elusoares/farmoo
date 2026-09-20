@@ -32,7 +32,7 @@ services:
       - "${ANIMAIS_HOST_PORT}:3000"
     environment:
       NODE_ENV: ${NODE_ENV}
-      PORT: 3000
+      PORT: ${ANIMAIS_HOST_PORT}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_USER: ${POSTGRES_USER}
@@ -54,7 +54,7 @@ services:
       - "${PRODUCOES_HOST_PORT}:3001"
     environment:
       NODE_ENV: ${NODE_ENV}
-      PORT: 3001
+      PORT: ${PRODUCOES_HOST_PORT}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_USER: ${POSTGRES_USER}
