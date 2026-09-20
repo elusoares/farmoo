@@ -13,6 +13,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: ${TZ}
+      PGTZ: ${PGTZ}
     volumes:
       - farmoo-database-data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d:ro
@@ -35,6 +37,8 @@ services:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       DB_NAME: ${POSTGRES_DB}
+      TZ: ${TZ}
+      PGTZ: ${PGTZ}
     depends_on:
       - farmoo-database
     networks:

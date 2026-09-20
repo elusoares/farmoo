@@ -24,8 +24,8 @@ CREATE TABLE animais (
     valor_venda     NUMERIC(10,2) CHECK (valor_venda IS NULL OR valor_venda >= 0),
     data_venda      DATE,
 
-    created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_mae FOREIGN KEY (mae_id) REFERENCES animais(id),
     CONSTRAINT fk_pai FOREIGN KEY (pai_id) REFERENCES animais(id),
@@ -45,7 +45,7 @@ CREATE TABLE producoes (
     quantidade  NUMERIC(10,2) NOT NULL CHECK (quantidade > 0),
     unidade     VARCHAR(20) NOT NULL,
     data        DATE NOT NULL,
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_animal FOREIGN KEY (animal_id) REFERENCES animais(id)
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE custos (
     valor       NUMERIC(10,2) NOT NULL CHECK (valor >= 0),
     data        DATE NOT NULL,
     animal_id   INTEGER,
-    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_animal_custo FOREIGN KEY (animal_id) REFERENCES animais(id)
 );
 
@@ -69,7 +69,7 @@ CREATE TABLE vendas (
     preco_unitario  NUMERIC(10,2) NOT NULL CHECK (preco_unitario >= 0),
     valor_total     NUMERIC(10,2) NOT NULL CHECK (valor_total >= 0),
     data            DATE NOT NULL,
-    created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Índices para performance
