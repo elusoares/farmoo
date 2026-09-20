@@ -1,7 +1,7 @@
 {
-  "name": "animais",
+  "name": "producoes",
   "version": "1.0.0",
-  "description": "Serviço animais do projeto farmoo",
+  "description": "Serviço producoes do projeto farmoo",
   "license": "ISC",
   "author": "Elusai Soares",
   "main": "src/index.js",
