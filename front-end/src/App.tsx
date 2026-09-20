@@ -19,7 +19,7 @@ import {
   X,
 } from 'lucide-react'
 import type { FormEvent } from 'react'
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { checkAnimalsHealth, createAnimal, getAnimals, sellAnimal } from './api'
 import './App.css'
 import type { Animal, AnimalOrigin, CreateAnimalPayload } from './types'
@@ -73,6 +73,7 @@ const App = () => {
   const [formError, setFormError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const previousHealth = useRef<HealthStatus>('checking')
   const deferredSearch = useDeferredValue(search)
 
   const loadAnimals = async (refresh = false) => {
@@ -95,9 +96,12 @@ const App = () => {
   const verifyHealth = async () => {
     try {
       const healthy = await checkAnimalsHealth()
+      const wasOffline = previousHealth.current === 'offline'
+      previousHealth.current = healthy ? 'online' : 'offline'
       setHealth(healthy ? 'online' : 'offline')
-      if (healthy) await loadAnimals(true)
+      if (healthy && wasOffline) await loadAnimals(true)
     } catch {
+      previousHealth.current = 'offline'
       setHealth('offline')
     }
   }
@@ -110,13 +114,19 @@ const App = () => {
       try {
         const healthy = await checkAnimalsHealth(controller.signal)
         if (!mounted) return
+        const lastHealth = previousHealth.current
+        previousHealth.current = healthy ? 'online' : 'offline'
         setHealth(healthy ? 'online' : 'offline')
-        if (healthy) {
+
+        if (healthy && (lastHealth === 'checking' || lastHealth === 'offline')) {
           const data = await getAnimals()
           if (mounted) setAnimals(data)
         }
       } catch {
-        if (mounted) setHealth('offline')
+        if (mounted) {
+          previousHealth.current = 'offline'
+          setHealth('offline')
+        }
       } finally {
         if (mounted) setIsLoading(false)
       }
