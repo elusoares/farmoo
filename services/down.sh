@@ -18,19 +18,20 @@ stop_compose_watch() {
 
 	watch_pid=$(cat "$WATCH_PID_FILE")
 
-	if kill -0 "$watch_pid" 2>/dev/null; then
+	if [[ "$watch_pid" =~ ^[0-9]+$ ]] && kill -0 -- "-$watch_pid" 2>/dev/null; then
 		echo -e "${YELLOW}👀 Encerrando monitoramento de desenvolvimento...${NC}"
-		kill "$watch_pid"
+		kill -CONT -- "-$watch_pid" 2>/dev/null || true
+		kill -TERM -- "-$watch_pid" 2>/dev/null || true
 
 		for _ in {1..50}; do
-			if ! kill -0 "$watch_pid" 2>/dev/null; then
+			if ! kill -0 -- "-$watch_pid" 2>/dev/null; then
 				break
 			fi
 			read -r -t 0.1 || true
 		done
 
-		if kill -0 "$watch_pid" 2>/dev/null; then
-			kill -KILL "$watch_pid"
+		if kill -0 -- "-$watch_pid" 2>/dev/null; then
+			kill -KILL -- "-$watch_pid"
 		fi
 	fi
 

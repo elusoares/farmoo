@@ -13,12 +13,20 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 WATCH_PID_FILE='.compose-watch.pid'
+watch_job_pid=''
+watch_pgid=''
 
-cleanup_watch_pid() {
+cleanup_watch() {
+  if [[ -n "$watch_pgid" ]] && kill -0 -- "-$watch_pgid" 2>/dev/null; then
+    kill -CONT -- "-$watch_pgid" 2>/dev/null || true
+    kill -TERM -- "-$watch_pgid" 2>/dev/null || true
+  fi
+
   rm -f "$WATCH_PID_FILE"
 }
 
-trap cleanup_watch_pid EXIT
+trap cleanup_watch EXIT
+trap 'exit 0' INT TERM HUP
 
 echo -e "${GREEN}🚀 Subindo ambiente de DESENVOLVIMENTO com watch...${NC}"
 
@@ -38,16 +46,23 @@ echo -e "${YELLOW}👀 Monitorando alterações em src/ e package.json...${NC}"
 echo -e "${YELLOW}   Ctrl+C para sair do watch (os containers continuam rodando).${NC}"
 echo ""
 
-docker compose watch &
-watch_pid=$!
-printf '%s\n' "$watch_pid" > "$WATCH_PID_FILE"
+setsid --wait bash -c 'printf "%s\n" "$$" > "$1"; exec docker compose watch' _ "$WATCH_PID_FILE" &
+watch_job_pid=$!
 
-if wait "$watch_pid"; then
+while [[ ! -s "$WATCH_PID_FILE" ]]; do
+  if ! kill -0 "$watch_job_pid" 2>/dev/null; then
+    wait "$watch_job_pid"
+  fi
+done
+
+watch_pgid=$(cat "$WATCH_PID_FILE")
+
+if wait "$watch_job_pid"; then
   exit 0
 else
   watch_status=$?
 fi
 
-if [[ "$watch_status" -ne 137 && "$watch_status" -ne 143 ]]; then
+if [[ "$watch_status" -ne 130 && "$watch_status" -ne 137 && "$watch_status" -ne 143 ]]; then
   exit "$watch_status"
 fi
