@@ -1,0 +1,16 @@
+# Dockerfile de desenvolvimento para o serviço de animais
+
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+USER node
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
