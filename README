@@ -1,23 +1,55 @@
 Passos utilizados para o desenvolvimento desse trabalho:
 1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, com o comando docker network create farmoo-network
-2. Defini o schema do banco e coloquei na pasta `database/init`.
+2. Defini o schema, dados iniciais e views do banco e coloquei na pasta `database/init`.
 3. Configurei o arquivo `docker-compose.yml` para:
-  - utilizar a rede `farmoo-network` e conectar os serviços 
-    necessários.
+  - utilizar a rede `farmoo-network` 
   - criar o volume farmoo-database-data para persistência dos dados do banco.
   - criar o farmoo-database, que é o container do banco de dados PostgreSQL.
+  - criar o farmoo-animais, que é o container do serviço de animais
 4. Executei `docker compose up --build -d` para criar os containers
 5. Criei a conexão com o banco no dbeaver
+6. Criei o .gitignore para ignorar
+  - todas as pastas node_modules do projeto
+  - todas as pastas dist do projeto
+7. Criei o .vscode/.settings.json para configurar o VS Code com preferências específicas do projeto.
 
 Inicialização do Container PostgreSQL:
-1. Coloque os scripts `.sql`, `.sql.gz` ou `.sh` em `database/init`.
+1. Coloque os scripts do banco em `database/init`.
 2. Ao executar `docker compose up --build -d` pela primeira vez, a imagem oficial executa os arquivos em ordem alfabética. Prefixos como `01-schema.sql` e `02-dados.sql` deixam essa ordem explícita.
 3. Os scripts de inicialização só são executados quando o volume de dados está vazio. Apenas alterar um arquivo não atualiza um banco já inicializado.
 4. Durante o desenvolvimento, para apagar e recriar o banco usando os scripts atuais, execute `docker compose down -v` e depois `docker compose up -d`. Esse comando exclui todos os dados do banco.
 5. Para atualizar um banco preservando dados, crie uma nova migration incremental e aplique-a com uma ferramenta de migrations, como Flyway ou Liquibase. Não edite uma migration já aplicada.
 
+Desenvolvimento dos serviços com Node.js e Typescript
+- na pasta do serviço inicializei com `npm init` e escolhi o type `module` para poder utilizar o sistema de modulos mais atual 
+- instalei como dependências de produção:
+  - `express`: framework usado para construir aplicações web e APIs de forma rápida e com menos código.
+  - `tsc-alias`: ferramenta que roda depois do tsc e corrige os caminhos de importação no código compilado (na pasta dist/), adicionando automaticamente as extensões .js que faltam
+- instalei como dependências de desenvolvimento: 
+  - `typescript`: É o compilador oficial do TypeScript. Ele analisa seu código em busca de erros de tipagem e o converte (transpila) em JavaScript puro para que o Node.js consiga executá-lo.
+  - `@types/node`: Fornece as definições de tipo para os recursos nativos do Node.js (como o sistema de arquivos fs, caminhos path, variáveis globais process, etc.). Sem isso, o TypeScript não reconhece os comandos do próprio Node. 
+  - `@types/express`: Adiciona as definições de tipo para o framework Express. Ele permite que o seu editor de código (como o VS Code) ofereça preenchimento automático (Autocompletar/IntelliSense) para as rotas, requisições e respostas do Express.
+  - `tsx`: É uma ferramenta excelente para o dia a dia. Ela permite executar arquivos TypeScript diretamente no terminal (ex: npx tsx src/server.ts) sem que você precise compilar manualmente para JavaScript primeiro. Ela substitui de forma moderna e muito mais rápida o antigo ts-node.
+- executei `npx tsc --init` para criar o arquivo `tsconfig.json`, que contém as configurações do compilador TypeScript para o projeto.
+  - aqui adicionei as opçoes:
+    - noImplicitAny: impede que variáveis e parâmetros tenham o tipo `any` implícito, forçando a definição explícita de tipos.
+    - strictNullChecks: força a verificação de nulidade, garantindo que valores `null` e `undefined` sejam tratados explicitamente.
+    - noUnusedLocals: alerta sobre variáveis locais que foram declaradas mas não utilizadas, ajudando a manter o código limpo e evitar possíveis erros.
+    - noUnusedParameters: alerta sobre parâmetros de função que foram declarados mas não utilizados, ajudando a manter o código limpo e evitar possíveis erros.
+    - noImplicitReturns: garante que todas as funções tenham um valor de retorno explícito em todos os caminhos de execução, evitando retornos implícitos indesejados.
+    - noFallthroughCasesInSwitch: previne que casos no switch "caiam" para o próximo caso sem um break explícito, ajudando a evitar erros lógicos.
+    - esModuleInterop: permite a interoperabilidade entre módulos CommonJS e ES Modules, facilitando a importação de módulos que utilizam diferentes sistemas de módulos.
+- COMO PERMITIR IMPORTAR SEM DEFINIR A EXTENSÃO `.js` NAS IMPORTAÇÕES RELATIVAS:
+  - instalar a dependencia de desenvolvimento tsc-alias
+  - adicionar um script no `package.json` para rodar o tsc-alias após a compilação do TypeScript, por exemplo:
+    ```json
+    "scripts": {
+      "build": "tsc && tsc-alias"
+    }
+    ```
+  - Remover a opção "type" do `package.json`.
 Coisas interessantes que fui aprendendo ao longo do desenvolvimento:
-O que significa cada comando:
+O que significa cada comando Docker usado:
 1. `docker network create farmoo-network` cria a rede farmoo-network do tipo bridge, que é a rede padrão do Docker e permite comunicação entre containers na mesma rede.
 2. `docker network ls`: lista todas as redes Docker disponíveis.
 3. `docker network inspect farmoo-network`: exibe detalhes sobre a rede farmoo-network, incluindo containers conectados e configurações de rede.
