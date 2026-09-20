@@ -45,8 +45,16 @@ CREATE TABLE producoes (
     quantidade  NUMERIC(10,2) NOT NULL CHECK (quantidade > 0),
     unidade     VARCHAR(20) NOT NULL,
     data        DATE NOT NULL,
+    vendido     BOOLEAN NOT NULL DEFAULT FALSE,
+    valor_venda NUMERIC(10,2) CHECK (valor_venda IS NULL OR valor_venda >= 0),
+    data_venda  DATE,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_animal FOREIGN KEY (animal_id) REFERENCES animais(id)
+    CONSTRAINT fk_animal FOREIGN KEY (animal_id) REFERENCES animais(id),
+    CONSTRAINT chk_venda_producao CHECK (
+        (vendido = FALSE AND valor_venda IS NULL AND data_venda IS NULL)
+        OR
+        (vendido = TRUE AND valor_venda IS NOT NULL AND data_venda IS NOT NULL AND data_venda >= data)
+    )
 );
 
 -- Tabela de custos
@@ -61,23 +69,11 @@ CREATE TABLE custos (
     CONSTRAINT fk_animal_custo FOREIGN KEY (animal_id) REFERENCES animais(id)
 );
 
--- Tabela de vendas
-CREATE TABLE vendas (
-    id              SERIAL PRIMARY KEY,
-    produto         VARCHAR(50) NOT NULL,
-    quantidade      NUMERIC(10,2) NOT NULL CHECK (quantidade > 0),
-    preco_unitario  NUMERIC(10,2) NOT NULL CHECK (preco_unitario >= 0),
-    valor_total     NUMERIC(10,2) NOT NULL CHECK (valor_total >= 0),
-    data            DATE NOT NULL,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Índices para performance
 CREATE INDEX idx_animais_tipo ON animais(tipo);
 CREATE INDEX idx_animais_vendido ON animais(vendido);
 CREATE INDEX idx_producoes_animal ON producoes(animal_id);
 CREATE INDEX idx_producoes_data ON producoes(data);
+CREATE INDEX idx_producoes_vendido ON producoes(vendido);
 CREATE INDEX idx_custos_animal ON custos(animal_id);
 CREATE INDEX idx_custos_data ON custos(data);
-CREATE INDEX idx_vendas_data ON vendas(data);
-CREATE INDEX idx_vendas_produto ON vendas(produto);

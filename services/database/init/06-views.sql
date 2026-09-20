@@ -19,9 +19,21 @@ CREATE VIEW vw_producoes AS
 SELECT
     p.id, p.animal_id,
     a.nome AS nome_animal, a.tipo AS tipo_animal,
-    p.tipo, p.quantidade, p.unidade, p.data
+    p.tipo, p.quantidade, p.unidade, p.data,
+    p.vendido, p.valor_venda, p.data_venda,
+    CASE WHEN p.vendido THEN 'vendido' ELSE 'em estoque' END AS status
 FROM producoes p
 JOIN animais a ON p.animal_id = a.id;
+
+CREATE VIEW vw_estoque_producoes AS
+SELECT
+    p.tipo AS produto,
+    p.unidade,
+    SUM(p.quantidade) AS quantidade_produzida,
+    COALESCE(SUM(p.quantidade) FILTER (WHERE p.vendido), 0) AS quantidade_vendida,
+    COALESCE(SUM(p.quantidade) FILTER (WHERE NOT p.vendido), 0) AS quantidade_disponivel
+FROM producoes p
+GROUP BY p.tipo, p.unidade;
 
 -- ---------- VIEWS DO SERVIÇO FINANCEIRO ----------
 
@@ -36,8 +48,14 @@ LEFT JOIN animais a ON c.animal_id = a.id;
 
 CREATE VIEW vw_vendas AS
 SELECT
-    id, produto, quantidade, preco_unitario, valor_total, data
-FROM vendas;
+    id,
+    tipo AS produto,
+    quantidade,
+    valor_venda / quantidade AS preco_unitario,
+    valor_venda AS valor_total,
+    data_venda AS data
+FROM producoes
+WHERE vendido;
 
 -- Resultado por animal (custos − receitas estimadas)
 CREATE VIEW vw_resultado_por_animal AS
