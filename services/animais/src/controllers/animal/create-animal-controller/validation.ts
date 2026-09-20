@@ -28,7 +28,7 @@ const createAnimalBodySchema: z.ZodType<CreateAnimalBody> = z.discriminatedUnion
     .strict(),
 ])
 
-export const validateCreateAnimalBody = (data: unknown): CreateAnimalBody => {
+const createAnimalValidation = (data: unknown): CreateAnimalBody => {
   const result = createAnimalBodySchema.safeParse(data)
 
   if (!result.success) {
@@ -38,3 +38,5 @@ export const validateCreateAnimalBody = (data: unknown): CreateAnimalBody => {
 
   return result.data
 }
+
+export default createAnimalValidation

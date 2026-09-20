@@ -4,13 +4,13 @@ import { AnimalCreationError } from '@repositories/create-animal/errors'
 import createAnimalUseCase from '@use-cases/create-animal-usecase'
 import { logger } from '@utils/logger'
 import { Request, Response } from 'express'
-import { validateCreateAnimalBody } from './validation'
+import createAnimalValidation from './validation'
 
 const CreateAnimalController = async (req: Request, res: Response) => {
   logger.info('Request de criação de animal', {
     body: req.body,
   })
-  const validatedBody = validateCreateAnimalBody(req.body)
+  const validatedBody = createAnimalValidation(req.body)
   try {
     const animal = await createAnimalUseCase(validatedBody)
 

@@ -109,7 +109,7 @@ const bodySchema: z.ZodType<Body> = z.object({
   email: z.string().email(),
 })
 
-export const validateBody = (data: unknown): Body => {
+const validateBody = (data: unknown): Body => {
   const result = bodySchema.safeParse(data)
 
   if (!result.success) {
@@ -121,7 +121,8 @@ export const validateBody = (data: unknown): Body => {
 
   return result.data
 }
-``` 
+export default validateBody
+```
 ### Logging
 
 - A shared `logger` is available with `info`, `warn`, and `error` methods.
@@ -150,13 +151,13 @@ import { AnimalCreationError } from '@repositories/errors'
 import createAnimalUseCase from '@use-cases/create-animal-usecase'
 import { logger } from '@utils/logger'
 import { Request, Response } from 'express'
-import { validateCreateAnimalBody } from './validation'
+import createAnimalValidation from './validation'
 
 const CreateAnimalController = async (req: Request, res: Response) => {
   logger.info('Request de criação de animal', {
     body: req.body,
   })
-  const validatedBody = validateCreateAnimalBody(req.body)
+  const validatedBody = createAnimalValidation(req.body)
   try {
     const animal = await createAnimalUseCase(validatedBody)
 
