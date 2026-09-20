@@ -1,3 +1,10 @@
+Como executar os containers:
+1. na pasta services, execute o comando `chmod +x up-dev.sh up-prod.sh down-all.sh` 
+2. Execute os comandos conforme necessário:
+  ./up-dev.sh      # sobe dev em background
+  ./up-prod.sh     # sobe prod em background
+  ./down-all.sh     # destrói tudo
+
 Passos utilizados para o desenvolvimento desse trabalho:
 1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, com o comando docker network create farmoo-network
 2. Defini o schema, dados iniciais e views do banco e coloquei na pasta `database/init`.
@@ -49,8 +56,14 @@ Desenvolvimento dos serviços com Node.js e Typescript
     }
     ```
   - Remover a opção "type" do `package.json`.
-- configurei o prettier
+- configurei o prettier com .prettierignore
 - configurei o arquivo .settings.json do vscode para manter organizado os imports. Preferi fazer isso pra nao ter que ficar instalando mais libs.
+- criei o .dockerignore: como temos muitas dependencias e coisas acontecendo somente no ambiente de desenvolvimento, não é necessário copiar tudo para o container
+- criei o /services/.env.example
+- criei Dockerfile.dev e docker-compose.override.yml para serem usados em desenvolvimento
+- criei Dockerfile e docker-compose.yml para serem usados em producao
+- criei os arquivos sh para executar os comandos dev e prod de criação do container
+
 
 Coisas interessantes que fui aprendendo ao longo do desenvolvimento:
 O que significa cada comando Docker usado:
