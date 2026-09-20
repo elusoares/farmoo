@@ -1,9 +1,9 @@
+import { healthController, updateHealthController } from '@controllers/health'
 import { Router } from 'express'
 
 const routes = Router()
 
-routes.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() })
-})
+routes.get('/health', healthController)
+routes.patch('/health', updateHealthController)
 
 export default routes
