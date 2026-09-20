@@ -55,6 +55,7 @@ Desenvolvimento dos serviços com Node.js e Typescript
     - noImplicitReturns: garante que todas as funções tenham um valor de retorno explícito em todos os caminhos de execução, evitando retornos implícitos indesejados.
     - noFallthroughCasesInSwitch: previne que casos no switch "caiam" para o próximo caso sem um break explícito, ajudando a evitar erros lógicos.
     - esModuleInterop: permite a interoperabilidade entre módulos CommonJS e ES Modules, facilitando a importação de módulos que utilizam diferentes sistemas de módulos.
+    - paths: cria os aliases das pastas
 - COMO PERMITIR IMPORTAR SEM DEFINIR A EXTENSÃO `.js` NAS IMPORTAÇÕES RELATIVAS:
   - instalar a dependencia de desenvolvimento tsc-alias
   - adicionar um script no `package.json` para rodar o tsc-alias após a compilação do TypeScript, por exemplo:

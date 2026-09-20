@@ -4,6 +4,15 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
+    "paths": {
+      "@config/*": ["./src/config/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@infra/*": ["./src/infra/*"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@app-types/*": ["./src/types/*"],
+      "@use-cases/*": ["./src/use-cases/*"],
+      "@utils/*": ["./src/utils/*"]
+    },
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
