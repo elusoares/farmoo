@@ -9,6 +9,7 @@ import {
   LoaderCircle,
   PackageOpen,
   PawPrint,
+  PiggyBank,
   Plus,
   RefreshCw,
   Search,
@@ -17,8 +18,8 @@ import {
   Wheat,
   X,
 } from 'lucide-react'
-import { useDeferredValue, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { useDeferredValue, useEffect, useState } from 'react'
 import { checkAnimalsHealth, createAnimal, getAnimals, sellAnimal } from './api'
 import './App.css'
 import type { Animal, AnimalOrigin, CreateAnimalPayload } from './types'
@@ -36,6 +37,11 @@ const animalIcons: Record<string, typeof Beef> = {
   vaca: Beef,
   galinha: Bird,
   ovelha: PawPrint,
+  porco: PiggyBank,
+  pato: Bird,
+  boi: Beef,
+  cavalo: PackageOpen,
+  jumento: LoaderCircle,
 }
 
 const formatCurrency = (value: string | number | null) => {
@@ -326,7 +332,7 @@ const App = () => {
             <form onSubmit={handleCreate}>
               <div className="form-grid">
                 <label><span>Nome</span><input name="nome" required maxLength={100} autoFocus /></label>
-                <label><span>Tipo</span><select name="tipo" required><option value="vaca">Vaca</option><option value="galinha">Galinha</option><option value="ovelha">Ovelha</option><option value="porco">Porco</option><option value="pato">Pato</option></select></label>
+                <label><span>Tipo</span><select name="tipo" required><option value="vaca">Vaca</option><option value="boi">Boi</option><option value="cavalo">Cavalo</option><option value="jumento">Jumento</option><option value="galinha">Galinha</option><option value="ovelha">Ovelha</option><option value="porco">Porco</option><option value="pato">Pato</option></select></label>
               </div>
               <fieldset><legend>Origem</legend><div className="segmented"><button className={origin === 'comprado' ? 'selected' : ''} onClick={() => setOrigin('comprado')} type="button">Comprado</button><button className={origin === 'nascido' ? 'selected' : ''} onClick={() => setOrigin('nascido')} type="button">Nascido na fazenda</button></div></fieldset>
               {origin === 'comprado' ? (
