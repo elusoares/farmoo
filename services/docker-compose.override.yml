@@ -6,7 +6,6 @@ services:
       context: ./animais
       dockerfile: Dockerfile.dev
     environment:
-      NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
     develop:
       watch:
