@@ -38,6 +38,7 @@ Desenvolvimento dos serviços com Node.js e Typescript
 - instalei como dependências de produção:
   - `express`: framework usado para construir aplicações web e APIs de forma rápida e com menos código.
   - `pg`: driver do postgresql
+  - `zod`: biblioteca para validação dos dados de entrada das rotas 
 - instalei como dependências de desenvolvimento: 
   - `typescript`: É o compilador oficial do TypeScript. Ele analisa seu código em busca de erros de tipagem e o converte (transpila) em JavaScript puro para que o Node.js consiga executá-lo.
   - `@types/node`: Fornece as definições de tipo para os recursos nativos do Node.js (como o sistema de arquivos fs, caminhos path, variáveis globais process, etc.). Sem isso, o TypeScript não reconhece os comandos do próprio Node. 

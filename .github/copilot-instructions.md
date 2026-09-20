@@ -68,9 +68,57 @@ service/ # where service is the name of the specific service (e.g., animal-servi
 ├── src/
 │   ├── config/ # database initialization and configuration, and environment type definitions
 │   ├── controllers/ # request handlers for the service
+│   |   └──controler-name/ # folder for a specific controller
+|   |      ├──index.ts # entry point for the controller  
+|   |      ├──types.ts # type definitions for the controller
+|   |      └──validation.ts # validation logic for the controller
 │   ├── infra/
-|   |   └── http/ # server initialization and routing definitions
+|   |   └── http/ # server initialization, routing and type definitions
 │   ├── repositories/ # data access layer for the service and data type definitions
-│   └── utils/ # utility functions for the service
-└── index.ts # entry point for the service
+│   └── utils/ # utility functions
+└── index.ts # entry point
 ```
+
+## Zod Validation Files
+
+- Each controller lives in `controllers/<name>/`.
+- `index.ts` is the controller entrypoint.
+- `validation.ts` contains the Zod schemas and the validation function for body, path, or query.
+
+### validation.ts pattern
+
+- The validation function receives `unknown`.
+- Use `safeParse` to validate against the expected Zod schema.
+- On success, return the parsed data typed as an explicit, hand-written type.
+- On failure, throw a validation error containing the failure details.
+- Use HTTP status `400 Bad Request` for validation errors (or `422 Unprocessable Entity` if the project distinguishes malformed vs. semantic errors).
+
+### Error details
+
+- The thrown error must include the Zod error details.
+- Use `z.treeifyError()` or `z.prettifyError()` to expose the failure reason clearly.
+
+### Example
+
+```ts
+import { z } from 'zod'
+import { Body } from './types'
+
+const bodySchema: z.ZodType<Body> = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+})
+
+export const validateBody = (data: unknown): Body => {
+  const result = bodySchema.safeParse(data)
+
+  if (!result.success) {
+    throw new ValidationError('Invalid body', {
+      status: 400,
+      details: z.treeifyError(result.error),
+    })
+  }
+
+  return result.data
+}
+``` 
