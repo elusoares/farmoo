@@ -1,11 +1,11 @@
 import { pool } from '@config/database'
-import { Animal } from '@repositories/create-animal/types'
+import { AnimalView } from '@repositories/get-animal-by-id/types'
 import { logger } from '@utils/logger'
 import { AnimalNotFoundError } from './error'
 
 const getAnimalByIdRepository = async (id: string) => {
-  const result = await pool.query<Animal>(
-    `SELECT * FROM farmoo.animais WHERE id = $1`,
+  const result = await pool.query<AnimalView>(
+    `SELECT * FROM farmoo.vw_animais WHERE id = $1`,
     [id]
   )
 
