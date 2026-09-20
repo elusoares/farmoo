@@ -1,10 +1,10 @@
 import { pool } from '@config/database'
 import { logger } from '@utils/logger'
 import { AnimalCreationError } from './errors'
-import { AnimalRow, CreateAnimalData } from './types'
+import { Animal, CreateAnimalData } from './types'
 
-export const createAnimalRepository = async (data: CreateAnimalData): Promise<AnimalRow> => {
-  const result = await pool.query<AnimalRow>(
+export const createAnimalRepository = async (data: CreateAnimalData): Promise<Animal> => {
+  const result = await pool.query<Animal>(
     `INSERT INTO farmoo.animais (
 			tipo,
 			nome,

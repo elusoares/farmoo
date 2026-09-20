@@ -1,4 +1,4 @@
-export type AnimalRow = {
+export type Animal = {
   id: number
   tipo: string
   nome: string
