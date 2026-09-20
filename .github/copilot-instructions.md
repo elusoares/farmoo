@@ -12,7 +12,7 @@
 - Exception: if the next line starts with `(` or `[`, insert a `;` at the end of the previous line (or a leading `;` on the line starting with `(` or `[`) to avoid ASI issues.
 - Do not add `;` in imports, exports, declarations, or returns.
 
-### Examples
+#### Examples
 
 Avoid:
 ```ts
@@ -35,7 +35,7 @@ export function greet(): string {
 ### Functions
 - Always use arrow functions for both named and anonymous functions.
 
-### Examples
+#### Examples
 
 Avoid:
 ```ts
@@ -79,13 +79,13 @@ service/ # where service is the name of the specific service (e.g., animal-servi
 └── index.ts # entry point
 ```
 
-## Zod Validation Files
+### Zod Validation Files
 
 - Each controller lives in `controllers/<name>/`.
 - `index.ts` is the controller entrypoint.
 - `validation.ts` contains the Zod schemas and the validation function for body, path, or query.
 
-### validation.ts pattern
+#### validation.ts pattern
 
 - The validation function receives `unknown`.
 - Use `safeParse` to validate against the expected Zod schema.
@@ -93,12 +93,12 @@ service/ # where service is the name of the specific service (e.g., animal-servi
 - On failure, throw a validation error containing the failure details.
 - Use HTTP status `400 Bad Request` for validation errors (or `422 Unprocessable Entity` if the project distinguishes malformed vs. semantic errors).
 
-### Error details
+#### Error details
 
 - The thrown error must include the Zod error details.
 - Use `z.treeifyError()` or `z.prettifyError()` to expose the failure reason clearly.
 
-### Example
+#### Example
 
 ```ts
 import { z } from 'zod'
@@ -122,11 +122,149 @@ export const validateBody = (data: unknown): Body => {
   return result.data
 }
 ``` 
-## Logging
+### Logging
 
 - A shared `logger` is available with `info`, `warn`, and `error` methods.
-- In controllers, always log the outcome using the appropriate level:
-  - On success: `logger.info`
+- In controllers, always log the success outcome using `logger.info`
+- In the other parts of the code, log with the following levels:
   - On expected/warning conditions: `logger.warn`
   - On errors: `logger.error`
+- 
 - Pass a short message as the first argument and any extra details as additional arguments.
+
+#### Error Handling
+- Always handle errors with http error handler in `services/animais/src/infra/http/errors.ts`, ensuring that proper HTTP status codes and error messages are returned to the client.
+
+### Controller Structure
+
+- Each controller lives in `controllers/<name>/`.
+- `index.ts` is the controller entrypoint.
+- `types.ts` contains the type definitions for the controller.
+- `validation.ts` contains the Zod schemas and the validation function for body, path, or query.
+
+#### Example
+```ts
+import { HttpError } from '@infra/http/errors'
+import { HttpStatusCode } from '@infra/http/types'
+import { AnimalCreationError } from '@repositories/errors'
+import createAnimalUseCase from '@use-cases/create-animal-usecase'
+import { logger } from '@utils/logger'
+import { Request, Response } from 'express'
+import { validateCreateAnimalBody } from './validation'
+
+const CreateAnimalController = async (req: Request, res: Response) => {
+  logger.info('Request de criação de animal', {
+    body: req.body,
+  })
+  const validatedBody = validateCreateAnimalBody(req.body)
+  try {
+    const animal = await createAnimalUseCase(validatedBody)
+
+    logger.info('Animal criado', { animalId: animal.id })
+    return res.status(HttpStatusCode.CREATED).json(animal)
+  } catch (error) {
+    if (error instanceof AnimalCreationError) {
+      logger.error('Erro ao criar animal', error)
+
+      throw new HttpError('Não foi possível criar o animal', {
+        status: HttpStatusCode.INTERNAL_SERVER_ERROR,
+        details: { code: error.code },
+      })
+    }
+
+    throw error
+  }
+}
+
+export default CreateAnimalController
+```
+
+### Use Case Structure
+
+- Each use case lives in `use-cases/<name>-usecase/`.
+- A use case should communicate directly with the repositories layer and should not depend on controllers or HTTP details.
+
+#### Example
+```ts
+import { CreateAnimalBody } from '@controllers/animal/create-animal-controller/types'
+import { createAnimal } from '@repositories/create-animal'
+
+const createAnimalUseCase = async (animalData: CreateAnimalBody) => {
+  const animal = await createAnimal(
+    animalData.origem === 'comprado'
+      ? {
+          tipo: animalData.tipo,
+          nome: animalData.nome,
+          origem: animalData.origem,
+          valorCompra: animalData.valorCompra,
+          dataCompra: new Date(animalData.dataCompra),
+        }
+      : {
+          tipo: animalData.tipo,
+          nome: animalData.nome,
+          origem: animalData.origem,
+          dataNascimento: new Date(animalData.dataNascimento),
+          maeId: animalData.maeId,
+          ...(animalData.paiId !== undefined ? { paiId: animalData.paiId } : {}),
+        }
+  )
+  return animal
+}
+
+export default createAnimalUseCase
+```
+
+### Repository Structure
+- Each repository lives in `repositories/<name>/`.
+- A repository should handle direct interactions with the database and should not depend on controllers or HTTP details.
+- A repository should have its own error classes to handle specific database-related errors.
+- A repository should have its own types for the data it handles, such as input data and database row representations.
+- A repository should not depend on the use case or controller layers; it should be reusable and independent.
+- A repository should not throw generic errors; it should throw its specific error classes to allow the use case layer to handle them appropriately.
+- A repository should have its own types for the data it handles, such as input data and database row representations.
+
+#### Example
+```ts
+import { pool } from '@config/database'
+import { logger } from '@utils/logger'
+import { AnimalCreationError } from './errors'
+import { AnimalRow, CreateAnimalData } from './types'
+
+export const createAnimalRepository = async (data: CreateAnimalData): Promise<AnimalRow> => {
+  const result = await pool.query<AnimalRow>(
+    `INSERT INTO farmoo.animais (
+			tipo,
+			nome,
+			origem,
+			valor_compra,
+			data_compra,
+			data_nascimento,
+			mae_id,
+			pai_id
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING *`,
+    [
+      data.tipo,
+      data.nome,
+      data.origem,
+      data.valorCompra ?? null,
+      data.dataCompra ?? null,
+      data.dataNascimento ?? null,
+      data.maeId ?? null,
+      data.paiId ?? null,
+    ]
+  )
+
+  const animal = result.rows[0]
+
+  if (!animal) {
+    logger.error('Falha ao criar animal: nenhum registro retornado', {
+      tipo: data.tipo,
+      nome: data.nome,
+    })
+    throw new AnimalCreationError('O animal não foi retornado após a inserção no banco de dados')
+  }
+
+  return animal
+}
+```
