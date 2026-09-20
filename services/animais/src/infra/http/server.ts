@@ -1,6 +1,6 @@
 import { HttpError } from '@infra/http/errors'
 import { HttpStatusCode } from '@infra/http/types'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import express, { NextFunction, Request, Response } from 'express'
 import routes from './routes'
 const app = express()

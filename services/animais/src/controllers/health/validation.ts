@@ -1,5 +1,5 @@
 import { ValidationError } from '@infra/http/errors'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { z } from 'zod'
 import { UpdateHealthBody } from './types'
 

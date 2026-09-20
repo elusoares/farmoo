@@ -2,7 +2,7 @@ import { HttpError } from '@infra/http/errors'
 import { HttpStatusCode } from '@infra/http/types'
 import { AnimalCreationError } from '@repositories/create-animal/errors'
 import createAnimalUseCase from '@use-cases/create-animal-usecase'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { Request, Response } from 'express'
 import createAnimalValidation from './validation'
 
@@ -15,7 +15,7 @@ const CreateAnimalController = async (req: Request, res: Response) => {
     const animal = await createAnimalUseCase(validatedBody)
 
     logger.info('Animal criado', { animalId: animal.id })
-    
+
     return res.status(HttpStatusCode.CREATED).json(animal)
   } catch (error) {
     if (error instanceof AnimalCreationError) {

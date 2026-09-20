@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '@infra/http/types'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { Request, Response } from 'express'
 import { validateUpdateHealthBody } from './validation'
 

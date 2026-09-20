@@ -150,7 +150,7 @@ import { HttpError } from '@infra/http/errors'
 import { HttpStatusCode } from '@infra/http/types'
 import { AnimalCreationError } from '@repositories/errors'
 import createAnimalUseCase from '@use-cases/create-animal-usecase'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { Request, Response } from 'express'
 import createAnimalValidation from './validation'
 
@@ -228,7 +228,7 @@ export default createAnimalUseCase
 #### Example
 ```ts
 import { pool } from '@config/database'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { AnimalCreationError } from './errors'
 import { AnimalRow, CreateAnimalData } from './types'
 

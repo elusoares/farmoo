@@ -11,7 +11,7 @@ const formatMessage = (level: string, color: string, message: string): string =>
   return `${color}[${level}]${colors.reset} ${timestamp} ${message}`
 }
 
-export const logger = {
+const logger = {
   info: (message: string, ...details: unknown[]): void => {
     console.info(formatMessage('INFO', colors.cyan, message), ...details)
   },
@@ -22,3 +22,5 @@ export const logger = {
     console.error(formatMessage('ERROR', colors.red, message), ...details)
   },
 }
+
+export default logger

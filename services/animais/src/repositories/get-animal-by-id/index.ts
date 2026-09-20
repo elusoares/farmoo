@@ -1,6 +1,6 @@
 import { pool } from '@config/database'
 import { AnimalView } from '@repositories/get-animal-by-id/types'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { AnimalNotFoundError } from './error'
 
 const getAnimalByIdRepository = async (id: string) => {

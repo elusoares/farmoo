@@ -1,5 +1,5 @@
 import { pool } from '@config/database'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { AnimalCreationError } from './errors'
 import { Animal, CreateAnimalData } from './types'
 

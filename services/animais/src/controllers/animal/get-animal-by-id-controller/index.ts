@@ -2,7 +2,7 @@ import { HttpError } from '@infra/http/errors'
 import { HttpStatusCode } from '@infra/http/types'
 import { AnimalNotFoundError } from '@repositories/get-animal-by-id/error'
 import getAnimalByIdUseCase from '@use-cases/get-animal-by-id-usecase'
-import { logger } from '@utils/logger'
+import logger from '@utils/logger'
 import { Request, Response } from 'express'
 import getAnimalByIdValidation from './validation'
 
@@ -16,7 +16,7 @@ const GetAnimalByIdController = async (req: Request, res: Response) => {
     const animal = await getAnimalByIdUseCase(animalId)
 
     logger.info('Animal obtido com sucesso', { animal })
-    
+
     return res.status(HttpStatusCode.OK).json(animal)
   } catch (error) {
     if (error instanceof AnimalNotFoundError) {
