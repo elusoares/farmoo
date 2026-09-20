@@ -14,11 +14,13 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.2",
+    "@types/pg": "^8.23.1",
     "prettier": "^3.9.8",
     "tsc-alias": "^1.9.5",
     "tsx": "^4.23.13",

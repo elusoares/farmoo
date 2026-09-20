@@ -1,8 +1,18 @@
+import { testConnection } from './config/database'
+import { ENV } from './config/env'
 import { app } from './infra/http/server'
 
-// Uma boa prática é isolar a porta em variáveis de ambiente
-const PORT = process.env.PORT || 3333
+const PORT = ENV.port
 
-app.listen(PORT, () => {
-  console.log(`🚀 Microsserviço rodando na porta ${PORT}`)
-})
+const bootstrap = async () => {
+  
+  await testConnection()
+  app.listen(PORT, () => {
+    console.log(`🚀 Microsserviço 'animais' rodando na porta ${PORT}`)
+  })
+}
+
+// Aguarda o container do banco iniciar antes de tentar a conexão
+console.log("⏳ Aguardando o container do banco iniciar...")
+setTimeout(bootstrap, 3000);
+
