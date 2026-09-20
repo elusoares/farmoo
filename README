@@ -24,12 +24,13 @@ Desenvolvimento dos serviços com Node.js e Typescript
 - na pasta do serviço inicializei com `npm init` e escolhi o type `module` para poder utilizar o sistema de modulos mais atual 
 - instalei como dependências de produção:
   - `express`: framework usado para construir aplicações web e APIs de forma rápida e com menos código.
-  - `tsc-alias`: ferramenta que roda depois do tsc e corrige os caminhos de importação no código compilado (na pasta dist/), adicionando automaticamente as extensões .js que faltam
 - instalei como dependências de desenvolvimento: 
   - `typescript`: É o compilador oficial do TypeScript. Ele analisa seu código em busca de erros de tipagem e o converte (transpila) em JavaScript puro para que o Node.js consiga executá-lo.
   - `@types/node`: Fornece as definições de tipo para os recursos nativos do Node.js (como o sistema de arquivos fs, caminhos path, variáveis globais process, etc.). Sem isso, o TypeScript não reconhece os comandos do próprio Node. 
   - `@types/express`: Adiciona as definições de tipo para o framework Express. Ele permite que o seu editor de código (como o VS Code) ofereça preenchimento automático (Autocompletar/IntelliSense) para as rotas, requisições e respostas do Express.
   - `tsx`: É uma ferramenta excelente para o dia a dia. Ela permite executar arquivos TypeScript diretamente no terminal (ex: npx tsx src/server.ts) sem que você precise compilar manualmente para JavaScript primeiro. Ela substitui de forma moderna e muito mais rápida o antigo ts-node.
+  - `tsc-alias`: ferramenta que roda depois do tsc e corrige os caminhos de importação no código compilado (na pasta dist/), adicionando automaticamente as extensões .js que faltam.
+  - `prettier`: responsável por formatar o código — remover ponto e vírgula, trocar aspas duplas por simples, ajustar indentação, etc.
 - executei `npx tsc --init` para criar o arquivo `tsconfig.json`, que contém as configurações do compilador TypeScript para o projeto.
   - aqui adicionei as opçoes:
     - noImplicitAny: impede que variáveis e parâmetros tenham o tipo `any` implícito, forçando a definição explícita de tipos.
@@ -48,6 +49,9 @@ Desenvolvimento dos serviços com Node.js e Typescript
     }
     ```
   - Remover a opção "type" do `package.json`.
+- configurei o prettier
+- configurei o arquivo .settings.json do vscode para manter organizado os imports. Preferi fazer isso pra nao ter que ficar instalando mais libs.
+
 Coisas interessantes que fui aprendendo ao longo do desenvolvimento:
 O que significa cada comando Docker usado:
 1. `docker network create farmoo-network` cria a rede farmoo-network do tipo bridge, que é a rede padrão do Docker e permite comunicação entre containers na mesma rede.
