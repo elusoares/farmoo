@@ -1,11 +1,14 @@
 Como executar os containers:
-1. na pasta services, execute o comando `chmod +x up-dev.sh up-prod.sh down-all.sh` 
-2. Execute os comandos conforme necessário:
+1. crie o arquivo .env e altere os pontos indicados em .env.example. Foi definia nele a NODE_ENV mais para testar o typescript em desenvolvimento, onde o código é executado diretamente pelo tsx, e em produçao, onde ocorre o build com tsc
+2. na pasta services, execute o comando `chmod +x up-dev.sh up-prod.sh down.sh down-all.sh` 
+3. Execute os comandos conforme necessário:
   ./up-dev.sh      # sobe dev em background
   ./up-prod.sh     # sobe prod em background
-  ./down-all.sh     # destrói tudo
-3. Em terminais separados, verifique os logs de cada container: `docker logs -f <container>`
-4. Para apenas parar os serviços, execute `docker compose stop`
+  ./down.sh     # destrói containers sem destruir volumes, ou seja, o banco é preservado
+  ./down-all.sh     # destrói tudo, incluindo os volumes
+4. Em terminais separados, verifique os logs de cada container: `docker logs -f <container>`
+5. Para apenas parar os serviços, execute `docker compose stop`
+6. Para testar o outro ambiente, os containers devem ser destruídos pois eles compartilham nome e porta em ambos os ambientes. Nesse caso, use `./down.sh`para preservar o banco
 
 Passos utilizados para o desenvolvimento desse trabalho:
 1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, com o comando docker network create farmoo-network
