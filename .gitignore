@@ -1,5 +1,5 @@
-services/**/node_modules/
-services/**/dist/
-services/**/.env
+**/node_modules/
+**/dist/
+**/.env
 .env
 .compose-watch.pid
