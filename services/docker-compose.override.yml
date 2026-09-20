@@ -5,10 +5,17 @@ services:
     build:
       context: ./animais
       dockerfile: Dockerfile.dev
-    command: npm run dev
     environment:
       NODE_ENV: development
       CHOKIDAR_USEPOLLING: "true"
-    volumes:
-      - ./animais:/app
-      - /app/node_modules
+    develop:
+      watch:
+        # Sincroniza o código-fonte: alterações refletem na hora
+        - action: sync
+          path: ./animais/src
+          target: /app/src
+        # Rebuilda quando package.json ou package-lock.json mudam
+        - action: rebuild
+          path: ./animais/package.json
+        - action: rebuild
+          path: ./animais/package-lock.json

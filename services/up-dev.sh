@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Sobe o ambiente de desenvolvimento (com hot-reload) em background.
-# O docker-compose.override.yml é aplicado automaticamente.
+# Sobe o ambiente de desenvolvimento com hot-reload e sincronização automática.
+# Usa `docker compose watch` para refletir alterações de código e instalar
+# dependências automaticamente quando o package.json muda.
 
 set -euo pipefail
 
@@ -12,7 +13,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${GREEN}🚀 Subindo ambiente de DESENVOLVIMENTO em background...${NC}"
+echo -e "${GREEN}🚀 Subindo ambiente de DESENVOLVIMENTO com watch...${NC}"
 
 if [ ! -f .env ]; then
   echo -e "${RED}❌ Arquivo .env não encontrado.${NC}"
@@ -26,10 +27,8 @@ if ! docker network inspect farmoo-network >/dev/null 2>&1; then
   docker network create farmoo-network
 fi
 
-docker compose up -d --build "$@"
-
-echo -e "${GREEN}✅ Ambiente de desenvolvimento rodando.${NC}"
-echo -e "   Banco:    http://localhost:9000 (Postgres)"
-echo -e "   Animais:  http://localhost:9001/health"
+echo -e "${YELLOW}👀 Monitorando alterações em src/ e package.json...${NC}"
+echo -e "${YELLOW}   Ctrl+C para sair do watch (os containers continuam rodando).${NC}"
 echo ""
-echo -e "${YELLOW}📋 Logs:${NC} docker compose logs -f animais"
+
+docker compose watch
