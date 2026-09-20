@@ -1,6 +1,6 @@
-import { testConnection } from './config/database'
-import { ENV } from './config/env'
-import { app } from './infra/http/server'
+import { testConnection } from '@config/database'
+import { ENV } from '@config/env'
+import { app } from '@infra/http/server'
 
 const PORT = ENV.port
 
