@@ -12,10 +12,6 @@ NC='\033[0m'
 
 echo -e "${YELLOW}🛑 Destruindo containers (dev + prod), sem destruir os volumes...${NC}"
 
-# Para o ambiente de produção (ignora override)
-docker compose -f docker-compose.yml down
-
-# Para o ambiente de desenvolvimento (usa override automaticamente)
 docker compose down
 
 echo -e "${GREEN}✅ Tudo destruído.${NC}"
