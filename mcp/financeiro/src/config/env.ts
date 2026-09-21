@@ -18,9 +18,5 @@ const requiredNumber = (name: string): number => {
 export const ENV = {
   nodeEnv: required('NODE_ENV'),
   port: requiredNumber('PORT'),
-  geminiApiKey: required('GEMINI_API_KEY'),
-  geminiModel: required('GEMINI_MODEL'),
-  animaisMcpUrl: required('ANIMAIS_MCP_URL'),
-  producoesMcpUrl: required('PRODUCOES_MCP_URL'),
-  financeiroMcpUrl: required('FINANCEIRO_MCP_URL'),
+  financeiroServiceUrl: required('FINANCEIRO_SERVICE_URL'),
 } as const

@@ -36,6 +36,22 @@ services:
         - action: rebuild
           path: ./producoes/package-lock.json
 
+  farmoo-financeiro-mcp:
+    build:
+      context: ./financeiro
+      dockerfile: Dockerfile.dev
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    develop:
+      watch:
+        - action: sync
+          path: ./financeiro/src
+          target: /app/src
+        - action: rebuild
+          path: ./financeiro/package.json
+        - action: rebuild
+          path: ./financeiro/package-lock.json
+
   farmoo-chat-mcp:
     build:
       context: ./chat

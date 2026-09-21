@@ -31,6 +31,22 @@ services:
     networks:
       - farmoo-network
 
+  farmoo-financeiro-mcp:
+    build:
+      context: ./financeiro
+      dockerfile: Dockerfile
+    container_name: farmoo_financeiro_mcp
+    restart: always
+    ports:
+      - "${FINANCEIRO_MCP_HOST_PORT:-9104}:3003"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3003
+      FINANCEIRO_SERVICE_URL: ${FINANCEIRO_SERVICE_URL:-http://farmoo-financeiro:3002}
+      TZ: ${TZ}
+    networks:
+      - farmoo-network
+
   farmoo-chat-mcp:
     build:
       context: ./chat
@@ -46,10 +62,12 @@ services:
       GEMINI_MODEL: ${GEMINI_MODEL}
       ANIMAIS_MCP_URL: ${ANIMAIS_MCP_URL}
       PRODUCOES_MCP_URL: ${PRODUCOES_MCP_URL}
+      FINANCEIRO_MCP_URL: ${FINANCEIRO_MCP_URL:-http://farmoo-financeiro-mcp:3003/mcp}
       TZ: ${TZ}
     depends_on:
       - farmoo-animais-mcp
       - farmoo-producoes-mcp
+      - farmoo-financeiro-mcp
     networks:
       - farmoo-network
 

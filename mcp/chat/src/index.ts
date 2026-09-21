@@ -11,7 +11,7 @@ produzem produtos como leite, ovos, lã e carne, como a vaca, galinha, ovelha, p
 O fazendeiro precisa conhecer bem cada animal e suas produções para gerir a propriedade de forma eficiente. Precisa saber
 qual animal produz o quê. Qual animal tem lucro maior na venda de si próprio e dos produtos.
 Fale em português do Brasil, com linguagem simples e prática, como alguém experiente na rotina de uma pequena propriedade.
-Use as ferramentas disponíveis sempre que a pergunta depender dos dados reais dos animais, das produções ou do estoque.
+Use as ferramentas disponíveis sempre que a pergunta depender dos dados reais dos animais, das produções, do estoque, dos custos, das vendas ou dos resultados.
 Nunca invente dados. Se uma ferramenta estiver indisponível ou não houver informação suficiente, diga isso claramente.
 Você tem acesso somente para consulta: não prometa cadastrar, alterar, vender ou excluir registros.
 Responda de forma curta e direta, destacando números importantes.
@@ -30,7 +30,7 @@ const messageSchema = z.object({
     .default([]),
 })
 
-let clientsPromise: Promise<[Client, Client]> | null = null
+let clientsPromise: Promise<[Client, Client, Client]> | null = null
 
 const connectMcpClient = async (name: string, url: string) => {
   const client = new Client({ name: `farmoo_chat_${name}`, version: '1.0.0' })
@@ -42,6 +42,7 @@ const getMcpClients = async () => {
   clientsPromise ??= Promise.all([
     connectMcpClient('animais', ENV.animaisMcpUrl),
     connectMcpClient('producoes', ENV.producoesMcpUrl),
+    connectMcpClient('financeiro', ENV.financeiroMcpUrl),
   ])
 
   try {
@@ -73,7 +74,7 @@ const sendJson = (response: ServerResponse, status: number, body: unknown) => {
 }
 
 const answerQuestion = async (input: z.infer<typeof messageSchema>) => {
-  const [animaisClient, producoesClient] = await getMcpClients()
+  const [animaisClient, producoesClient, financeiroClient] = await getMcpClients()
   const ai = new GoogleGenAI({ apiKey: ENV.geminiApiKey })
   const contents: Content[] = [
     ...input.history.map(({ role, content }) => ({ role, parts: [{ text: content }] })),
@@ -85,7 +86,7 @@ const answerQuestion = async (input: z.infer<typeof messageSchema>) => {
     contents,
     config: {
       systemInstruction: FARMER_PERSONA,
-      tools: [mcpToTool(animaisClient, producoesClient)],
+      tools: [mcpToTool(animaisClient, producoesClient, financeiroClient)],
       temperature: 0.3,
     },
   })
