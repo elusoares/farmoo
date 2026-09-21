@@ -1,15 +1,20 @@
 import type {
     Animal,
     CreateAnimalPayload,
+    CreateCustoPayload,
     CreateProducaoPayload,
+    Custo,
     EstoqueProducao,
     Producao,
+    ResultadoPorAnimal,
     SellAnimalPayload,
     SellProducaoPayload,
+    Venda,
 } from './types'
 
 const animaisApiUrl = import.meta.env.VITE_ANIMAIS_API_URL ?? '/api/animais'
 const producoesApiUrl = import.meta.env.VITE_PRODUCOES_API_URL ?? '/api/producoes'
+const financeiroApiUrl = import.meta.env.VITE_FINANCEIRO_API_URL ?? '/api/financeiro'
 
 const getErrorMessage = async (response: Response) => {
   try {
@@ -76,3 +81,21 @@ export const sellProducao = (id: number, data: SellProducaoPayload) =>
     method: 'PATCH',
     body: JSON.stringify(data),
   })
+
+export const checkFinanceiroHealth = async (signal?: AbortSignal) => {
+  const response = await fetch(`${financeiroApiUrl}/health`, { signal })
+  return response.ok
+}
+
+export const getCustos = () => request<Custo[]>(financeiroApiUrl, '/custos')
+
+export const createCusto = (data: CreateCustoPayload) =>
+  request<Custo>(financeiroApiUrl, '/custos', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+
+export const getVendas = () => request<Venda[]>(financeiroApiUrl, '/vendas')
+
+export const getResultado = () =>
+  request<ResultadoPorAnimal[]>(financeiroApiUrl, '/resultado')

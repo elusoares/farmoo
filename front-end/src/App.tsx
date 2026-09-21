@@ -1,28 +1,29 @@
 import {
-  BadgeDollarSign,
-  Beef,
-  Bird,
-  CircleAlert,
-  CircleCheck,
-  Clock3,
-  HeartPulse,
-  LoaderCircle,
-  MessageCircle,
-  PackageOpen,
-  PawPrint,
-  PiggyBank,
-  Plus,
-  RefreshCw,
-  Search,
-  ShoppingCart,
-  Wheat,
-  X,
+    BadgeDollarSign,
+    Beef,
+    Bird,
+    CircleAlert,
+    CircleCheck,
+    Clock3,
+    HeartPulse,
+    LoaderCircle,
+    MessageCircle,
+    PackageOpen,
+    PawPrint,
+    PiggyBank,
+    Plus,
+    RefreshCw,
+    Search,
+    ShoppingCart,
+    Wheat,
+    X,
 } from 'lucide-react'
 import type { FormEvent } from 'react'
 import { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { checkAnimalsHealth, createAnimal, getAnimals, sellAnimal } from './api'
 import './App.css'
 import ChatWorkspace from './ChatWorkspace'
+import FinanceiroWorkspace from './FinanceiroWorkspace'
 import ProducoesWorkspace from './ProducoesWorkspace'
 import type { Animal, AnimalOrigin, CreateAnimalPayload } from './types'
 
@@ -32,8 +33,8 @@ type HealthStatus = 'checking' | 'online' | 'offline'
 const serviceTabs = [
   { id: 'animais' as const, label: 'Animais', icon: Beef },
   { id: 'producao' as const, label: 'Produção', icon: Wheat },
-  { id: 'chat' as const, label: 'Assistente', icon: MessageCircle },
   { id: 'financeiro' as const, label: 'Financeiro', icon: BadgeDollarSign },
+  { id: 'chat' as const, label: 'Assistente', icon: MessageCircle },
 ]
 
 const animalIcons: Record<string, typeof Beef> = {
@@ -67,6 +68,7 @@ const App = () => {
   const [activeService, setActiveService] = useState<ServiceId>('animais')
   const [health, setHealth] = useState<HealthStatus>('checking')
   const [productionHealth, setProductionHealth] = useState<HealthStatus>('checking')
+  const [financialHealth, setFinancialHealth] = useState<HealthStatus>('checking')
   const [chatHealth, setChatHealth] = useState<HealthStatus>('checking')
   const [animals, setAnimals] = useState<Animal[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -241,7 +243,7 @@ const App = () => {
           >
             <Icon size={18} />
             <span>{label}</span>
-            <span className={`service-dot ${id === 'animais' ? health : id === 'producao' ? productionHealth : id === 'chat' ? chatHealth : 'planned'}`} />
+            <span className={`service-dot ${id === 'animais' ? health : id === 'producao' ? productionHealth : id === 'financeiro' ? financialHealth : chatHealth}`} />
           </button>
         ))}
       </nav>
@@ -330,17 +332,11 @@ const App = () => {
           </section>
         ) : activeService === 'producao' ? (
           <ProducoesWorkspace animals={animals} onHealthChange={setProductionHealth} />
+        ) : activeService === 'financeiro' ? (
+          <FinanceiroWorkspace animals={animals} onHealthChange={setFinancialHealth} />
         ) : activeService === 'chat' ? (
           <ChatWorkspace onHealthChange={setChatHealth} />
-        ) : (
-          <section className="workspace future-service">
-            <div className="future-icon"><BadgeDollarSign size={30} /></div>
-            <p className="eyebrow">Próximo serviço</p>
-            <h1>Financeiro</h1>
-            <p>A integração será habilitada quando o serviço estiver disponível.</p>
-            <span className="planned-badge">Integração pendente</span>
-          </section>
-        )}
+        ) : null}
       </main>
 
       {createOpen && (

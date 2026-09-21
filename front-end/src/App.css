@@ -797,11 +797,76 @@ fieldset {
   width: min(310px, 100%);
 }
 
-.view-switch button {
+.financial-view-switch {
+  width: min(470px, 100%);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.view-switch button,
+.financial-view-switch button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
+}
+
+.financial-summary .metric strong {
+  font-size: clamp(17px, 2vw, 23px);
+}
+
+.financial-result.positive strong,
+.positive-value {
+  color: #70d5a7;
+}
+
+.financial-result.negative strong,
+.negative-value {
+  color: #ffaaa4;
+}
+
+td .positive-value {
+  color: var(--green);
+}
+
+td .negative-value {
+  color: var(--red);
+}
+
+.cost-icon {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.sale-icon {
+  color: #27628a;
+  background: #e4f0f8;
+}
+
+.status-tag.geral {
+  color: #596660;
+  background: #e9ece9;
+}
+
+.status-tag.lucro,
+.status-tag.prejuizo,
+.status-tag.neutro {
+  align-items: center;
+  gap: 4px;
+}
+
+.status-tag.lucro {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.status-tag.prejuizo {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.status-tag.neutro {
+  color: #68716d;
+  background: #e9ece9;
 }
 
 .status-tag.estoque {
@@ -972,6 +1037,10 @@ fieldset {
 
   .toolbar-actions .primary-button {
     flex: 1;
+  }
+
+  .financial-view-switch {
+    width: 100%;
   }
 
   .form-grid {

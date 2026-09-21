@@ -73,3 +73,41 @@ export type SellProducaoPayload = {
   valorVenda: number
   dataVenda: string
 }
+
+export type Custo = {
+  id: number
+  tipo: string
+  descricao: string | null
+  valor: string
+  data: string
+  animal_id: number | null
+  nome_animal: string | null
+  escopo: 'geral' | 'especifico'
+}
+
+export type CreateCustoPayload = {
+  tipo: string
+  descricao?: string
+  valor: number
+  data: string
+  animalId?: number
+}
+
+export type Venda = {
+  id: number
+  produto: string
+  quantidade: string
+  preco_unitario: string
+  valor_total: string
+  data: string
+}
+
+export type ResultadoPorAnimal = {
+  animal_id: number
+  nome_animal: string
+  tipo_animal: string
+  total_custos: string
+  total_vendas: string
+  resultado: string
+  situacao: 'lucro' | 'prejuizo' | 'neutro'
+}
