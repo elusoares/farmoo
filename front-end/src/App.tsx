@@ -7,6 +7,7 @@ import {
   Clock3,
   HeartPulse,
   LoaderCircle,
+  MessageCircle,
   PackageOpen,
   PawPrint,
   PiggyBank,
@@ -14,7 +15,6 @@ import {
   RefreshCw,
   Search,
   ShoppingCart,
-  Warehouse,
   Wheat,
   X,
 } from 'lucide-react'
@@ -22,15 +22,17 @@ import type { FormEvent } from 'react'
 import { useDeferredValue, useEffect, useRef, useState } from 'react'
 import { checkAnimalsHealth, createAnimal, getAnimals, sellAnimal } from './api'
 import './App.css'
+import ChatWorkspace from './ChatWorkspace'
 import ProducoesWorkspace from './ProducoesWorkspace'
 import type { Animal, AnimalOrigin, CreateAnimalPayload } from './types'
 
-type ServiceId = 'animais' | 'producao' | 'financeiro'
+type ServiceId = 'animais' | 'producao' | 'financeiro' | 'chat'
 type HealthStatus = 'checking' | 'online' | 'offline'
 
 const serviceTabs = [
   { id: 'animais' as const, label: 'Animais', icon: Beef },
   { id: 'producao' as const, label: 'Produção', icon: Wheat },
+  { id: 'chat' as const, label: 'Assistente', icon: MessageCircle },
   { id: 'financeiro' as const, label: 'Financeiro', icon: BadgeDollarSign },
 ]
 
@@ -65,6 +67,7 @@ const App = () => {
   const [activeService, setActiveService] = useState<ServiceId>('animais')
   const [health, setHealth] = useState<HealthStatus>('checking')
   const [productionHealth, setProductionHealth] = useState<HealthStatus>('checking')
+  const [chatHealth, setChatHealth] = useState<HealthStatus>('checking')
   const [animals, setAnimals] = useState<Animal[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -224,7 +227,6 @@ const App = () => {
           <span className="brand-mark"><Beef size={22} /></span>
           <span>farmoo</span>
         </a>
-        <div className="environment"><Warehouse size={15} /> Fazenda Principal</div>
       </header>
 
       <nav className="service-tabs" aria-label="Serviços" role="tablist">
@@ -239,7 +241,7 @@ const App = () => {
           >
             <Icon size={18} />
             <span>{label}</span>
-            <span className={`service-dot ${id === 'animais' ? health : id === 'producao' ? productionHealth : 'planned'}`} />
+            <span className={`service-dot ${id === 'animais' ? health : id === 'producao' ? productionHealth : id === 'chat' ? chatHealth : 'planned'}`} />
           </button>
         ))}
       </nav>
@@ -328,6 +330,8 @@ const App = () => {
           </section>
         ) : activeService === 'producao' ? (
           <ProducoesWorkspace animals={animals} onHealthChange={setProductionHealth} />
+        ) : activeService === 'chat' ? (
+          <ChatWorkspace onHealthChange={setChatHealth} />
         ) : (
           <section className="workspace future-service">
             <div className="future-icon"><BadgeDollarSign size={30} /></div>

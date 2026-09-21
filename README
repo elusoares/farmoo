@@ -11,7 +11,7 @@ Como executar os containers:
 6. Para testar o outro ambiente, os containers devem ser destruídos pois eles compartilham nome e porta em ambos os ambientes. Nesse caso, use `./down.sh`para preservar o banco
 7. Para "desligar" um serviço, faça a request `PATCH http://localhost:<PORT>/health` com o body `{ "healthy": false }`. Faça o mesmo para ligar, trocando o valor no body.
 8. Para rodar o front, execute dentro da pasta `farmoo/front-end` o comando `npm run dev`
-
+9. Repita os passos 1, 2, 3, 4, 5, 6, na pasta mcp
 Passos utilizados para o desenvolvimento desse trabalho:
 1. Criei a rede farmoo-network, uma rede do tipo bridge que é compartilhada pelos containers do compose, com o comando docker network create farmoo-network
 2. Defini o schema, dados iniciais e views do banco e coloquei na pasta `database/init`.
