@@ -18,6 +18,7 @@ services:
           path: ./animais/package.json
         - action: rebuild
           path: ./animais/package-lock.json
+          
   farmoo-producoes:
     build:
       context: ./producoes
@@ -35,3 +36,21 @@ services:
           path: ./producoes/package.json
         - action: rebuild
           path: ./producoes/package-lock.json
+
+  farmoo-financeiro:
+    build:
+      context: ./financeiro
+      dockerfile: Dockerfile.dev
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    develop:
+      watch:
+        # Sincroniza o código-fonte: alterações refletem na hora
+        - action: sync
+          path: ./financeiro/src
+          target: /app/src
+        # Rebuilda quando package.json ou package-lock.json mudam
+        - action: rebuild
+          path: ./financeiro/package.json
+        - action: rebuild
+          path: ./financeiro/package-lock.json

@@ -67,6 +67,29 @@ services:
     networks:
       - farmoo-network
 
+  farmoo-financeiro:
+    build:
+      context: ./financeiro
+      dockerfile: Dockerfile
+    container_name: farmoo_financeiro
+    restart: always
+    ports:
+      - "${FINANCEIRO_HOST_PORT:-9003}:3002"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3002
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      TZ: ${TZ}
+      PGTZ: ${PGTZ}
+    depends_on:
+      - farmoo-database
+    networks:
+      - farmoo-network
+
 volumes:
   farmoo-database-data:
 
