@@ -1,0 +1,58 @@
+# Docker compose de produção
+services:
+  farmoo-animais-mcp:
+    build:
+      context: ./animais
+      dockerfile: Dockerfile
+    container_name: farmoo_animais_mcp
+    restart: always
+    ports:
+      - "${ANIMAIS_MCP_HOST_PORT:-9101}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3000
+      ANIMAIS_SERVICE_URL: ${ANIMAIS_SERVICE_URL}
+      TZ: ${TZ}
+    networks:
+      - farmoo-network
+  farmoo-producoes-mcp:
+    build:
+      context: ./producoes
+      dockerfile: Dockerfile
+    container_name: farmoo_producoes_mcp
+    restart: always
+    ports:
+      - "${PRODUCOES_MCP_HOST_PORT:-9102}:3001"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3001
+      PRODUCOES_SERVICE_URL: ${PRODUCOES_SERVICE_URL}
+      TZ: ${TZ}
+    networks:
+      - farmoo-network
+
+  farmoo-chat-mcp:
+    build:
+      context: ./chat
+      dockerfile: Dockerfile
+    container_name: farmoo_chat_mcp
+    restart: unless-stopped
+    ports:
+      - '${CHAT_HOST_PORT:-9103}:3002'
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3002
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_MODEL: ${GEMINI_MODEL}
+      ANIMAIS_MCP_URL: ${ANIMAIS_MCP_URL}
+      PRODUCOES_MCP_URL: ${PRODUCOES_MCP_URL}
+      TZ: ${TZ}
+    depends_on:
+      - farmoo-animais-mcp
+      - farmoo-producoes-mcp
+    networks:
+      - farmoo-network
+
+networks:
+  farmoo-network:
+    external: true

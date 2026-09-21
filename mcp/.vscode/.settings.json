@@ -1,0 +1,6 @@
+{
+  // Configura o VS Code para organizar automaticamente as importações ao salvar o arquivo
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  }
+}

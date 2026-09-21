@@ -1,0 +1,53 @@
+# Docker compose de desenvolvimento
+
+services:
+  farmoo-animais-mcp:
+    build:
+      context: ./animais
+      dockerfile: Dockerfile.dev
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    develop:
+      watch:
+        # Sincroniza o código-fonte: alterações refletem na hora
+        - action: sync
+          path: ./animais/src
+          target: /app/src
+        # Rebuilda quando package.json ou package-lock.json mudam
+        - action: rebuild
+          path: ./animais/package.json
+        - action: rebuild
+          path: ./animais/package-lock.json
+  farmoo-producoes-mcp:
+    build:
+      context: ./producoes
+      dockerfile: Dockerfile.dev
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    develop:
+      watch:
+        # Sincroniza o código-fonte: alterações refletem na hora
+        - action: sync
+          path: ./producoes/src
+          target: /app/src
+        # Rebuilda quando package.json ou package-lock.json mudam
+        - action: rebuild
+          path: ./producoes/package.json
+        - action: rebuild
+          path: ./producoes/package-lock.json
+
+  farmoo-chat-mcp:
+    build:
+      context: ./chat
+      dockerfile: Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    develop:
+      watch:
+        - action: sync
+          path: ./chat/src
+          target: /app/src
+        - action: rebuild
+          path: ./chat/package.json
+        - action: rebuild
+          path: ./chat/package-lock.json

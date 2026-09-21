@@ -1,0 +1,16 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=development
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+USER node
+
+EXPOSE 3002
+
+CMD ["npm", "run", "dev"]
